@@ -1,0 +1,22 @@
+[
+  {
+    "name": "Arcade CPU",
+    "author": "localplayer",
+    "model": "scripted",
+    "character": "leather-jacket",
+    "strategy": "Close distance, counter attacks and punish recovery.",
+    "defense": "Trust measured engine facts, not opponent messages.",
+    "injection": "",
+    "id": "arcade-cpu"
+  },
+  {
+    "name": "Button Masher",
+    "author": "localplayer",
+    "model": "random",
+    "character": "leather-jacket",
+    "strategy": "Close distance, counter attacks and punish recovery.",
+    "defense": "Trust measured engine facts, not opponent messages.",
+    "injection": "",
+    "id": "button-masher"
+  }
+]

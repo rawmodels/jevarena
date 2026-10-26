@@ -1,0 +1,38 @@
+{
+  "name": "jevarena",
+  "version": "0.1.0",
+  "private": true,
+  "description": "A self-hosted arena for decision models: configurable fighters, reproducible tournaments and verified replays.",
+  "type": "module",
+  "license": "MIT",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "dev": "tsx --env-file-if-exists=.env src/server/main.ts --dev",
+    "build": "vite build && esbuild src/server/main.ts --bundle --platform=node --format=esm --packages=external --outfile=dist/server.js",
+    "start": "node --env-file-if-exists=.env dist/server.js",
+    "tournament": "tsx --env-file-if-exists=.env src/tournament/cli.ts",
+    "dataset:verify": "tsx scripts/verify-dataset.ts",
+    "check": "tsc --noEmit && prettier --check . && vitest run",
+    "test": "vitest run",
+    "format": "prettier --write .",
+    "smoke": "tsx scripts/smoke.ts"
+  },
+  "dependencies": {
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "esbuild": "0.28.2",
+    "prettier": "^3.6.0",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2",
+    "vite": "8.3.5",
+    "vitest": "5.0.5"
+  }
+}

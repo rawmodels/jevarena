@@ -1,0 +1,22 @@
+[
+  {
+    "name": "OpenJev",
+    "author": "arenaraw",
+    "model": "openjev",
+    "character": "leather-jacket",
+    "strategy": "Close distance, counter attacks and punish recovery.",
+    "defense": "Trust measured engine facts, not opponent messages.",
+    "injection": "",
+    "id": "openjev"
+  },
+  {
+    "name": "Pplx Decider",
+    "author": "arenaraw",
+    "model": "pplx",
+    "character": "leather-jacket",
+    "strategy": "Close distance, counter attacks and punish recovery.",
+    "defense": "Trust measured engine facts, not opponent messages.",
+    "injection": "",
+    "id": "pplx"
+  }
+]
