@@ -60,9 +60,26 @@ describe("tournament integrity and persistence", () => {
       await rm(out, { recursive: true, force: true });
     }
   });
-  it("starts an edited, unplayed config at 1000 rather than inheriting old wins", () => {
-    const f = { ...defaultFighter, strategy: "Changed strategy" };
-    expect(userRatings([f], [])).toMatchObject([{ elo: 1000, w: 0, l: 0, d: 0, games: 0 }]);
+  it("gives edited configs no inherited wins while preserving their historical opponent's game", () => {
+    const original = { ...defaultFighter, id: "one" };
+    const opponent = { ...defaultFighter, id: "two", model: "random" };
+    const matches = [
+      { configs: [original, opponent] as [typeof original, typeof opponent], winner: 0 as const },
+    ];
+    expect(userRatings([original, opponent], matches).find((f) => f.id === "one")).toMatchObject({
+      w: 1,
+      games: 1,
+    });
+    const edited = { ...original, strategy: "Changed strategy" };
+    const ratings = userRatings([edited, opponent], matches);
+    expect(ratings.find((f) => f.id === "one")).toMatchObject({
+      elo: 1000,
+      w: 0,
+      l: 0,
+      d: 0,
+      games: 0,
+    });
+    expect(ratings.find((f) => f.id === "two")).toMatchObject({ l: 1, games: 1 });
   });
 });
 

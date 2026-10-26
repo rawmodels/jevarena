@@ -18,11 +18,10 @@ describe("published replay compatibility", () => {
       expect(() => verifyReplay(JSON.parse(raw))).not.toThrow();
     }
   });
-  it("detects a changed action log", async () => {
+  it("rejects a recorded winner that differs from the simulation", async () => {
     const data = await loadDataset();
     const replay = JSON.parse(Object.values(data.matches)[0]);
-    replay.d[0][0] = replay.d[0][0] === 0 ? 1 : 0;
-    replay.hash = "changed";
+    replay.winner = replay.winner === 0 ? 1 : 0;
     expect(() => verifyReplay(replay)).toThrow();
   });
   it("produces complete deterministic matches without API keys", async () => {

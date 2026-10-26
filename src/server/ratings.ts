@@ -4,7 +4,10 @@ import type { Replay } from "../core/match";
 import { fingerprint } from "./storage";
 
 /** Edited configs get new rating identities; old games keep their exact opponent version. */
-export function userRatings(fighters: FighterConfig[], matches: Replay[]) {
+export function userRatings(
+  fighters: FighterConfig[],
+  matches: Pick<Replay, "configs" | "winner">[],
+) {
   const version = (fighter: FighterConfig) => `${fighter.id}:${fingerprint(fighter)}`;
   const ids = new Set<string>();
   const games = matches.map((match) => {
