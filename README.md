@@ -13,7 +13,7 @@ The repository includes the **21-model, 420-fight `@arenaraw` tournament**. You 
 Requires **Node.js 22.12+** (Node 24 recommended).
 
 ```sh
-git clone https://github.com/rawmodels/jevarena.git
+git clone https://github.com/AlexWortega/jevarena.git
 cd jevarena
 npm ci
 npm run dev
