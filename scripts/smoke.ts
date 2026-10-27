@@ -50,6 +50,24 @@ try {
   assert.equal(state.modelBoard.fighters.length, 21);
   assert.equal(state.modelBoard.matches.length, 420);
   assert.ok(!JSON.stringify(state).includes(testKey));
+  for (const character of [
+    "leather-jacket",
+    "ship-it-sam",
+    "search-goblin",
+    "safety-monk",
+    "metaverse-lizard",
+  ]) {
+    const response = await call(`/arena/sprites/${character}/idle.png`);
+    assert.equal(response.status, 200);
+    assert.equal(response.headers.get("content-type"), "image/png");
+    assert.equal(
+      Buffer.from(await response.arrayBuffer())
+        .subarray(0, 8)
+        .toString("hex"),
+      "89504e470d0a1a0a",
+    );
+  }
+
   assert.equal(
     (await call("/api/fighters", { ...defaultFighter }, { Origin: "https://evil.invalid" })).status,
     403,

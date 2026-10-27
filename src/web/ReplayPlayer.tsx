@@ -4,6 +4,7 @@ import { TICKS_PER_SECOND } from "../core/engine";
 import { drawMentalAttacks } from "../core/mental-render";
 import { drawFrame, VIEW_H, VIEW_W } from "./render";
 import { api } from "./api";
+import { warmCharacterSprites } from "./sprites";
 import type { ReplayResponse, State } from "./types";
 
 export function ReplayPlayer({ id, models }: { id: string; models: State["models"] }) {
@@ -57,7 +58,11 @@ export function ReplayPlayer({ id, models }: { id: string; models: State["models
         (i ? "#259a98" : "#b82926"),
     ) as [string, string];
     ctx.setTransform(2, 0, 0, 2, 0, 0);
-    drawFrame(ctx, s, names, colors);
+    const characters = replay.fighters.map(
+      (_id, side) =>
+        replay.configs?.[side]?.character ?? replay.characters?.[side] ?? "leather-jacket",
+    ) as [string, string];
+    drawFrame(ctx, s, names, colors, characters);
     drawMentalAttacks(ctx, s, replay.mentalEvents ?? []);
   }
   function seek(target: number) {
@@ -70,7 +75,20 @@ export function ReplayPlayer({ id, models }: { id: string; models: State["models
     draw();
   }
   useEffect(() => {
-    if (replay) seek(Math.min(tickRef.current, replay.ticks));
+    if (replay) {
+      seek(Math.min(tickRef.current, replay.ticks));
+      const characters = replay.fighters.map(
+        (_id, side) =>
+          replay.configs?.[side]?.character ?? replay.characters?.[side] ?? "leather-jacket",
+      );
+      let live = true;
+      void warmCharacterSprites(characters).then(() => {
+        if (live) draw();
+      });
+      return () => {
+        live = false;
+      };
+    }
   }, [replay]);
   useEffect(() => {
     if (!replay || !playing) return;

@@ -1,5 +1,5 @@
-// Canvas drawing for the arena. Fighters are jointed skeletons posed per action and phase; the stage is drawn
-// into a small buffer and scaled up without smoothing, which gives the arcade pixel look. No sprites, no borrowed art.
+// Draw selected character sprites over the arena. Physics remains entirely in core/engine.
+// Third-party character artwork is attributed in ASSETS.md.
 import {
   ATTACKS,
   type Fighter,
@@ -11,6 +11,8 @@ import {
   isAttack,
   lockedFor,
 } from "../core/engine";
+
+import { drawCharacterSprite, hasCharacterSprite, spriteFrame } from "./sprites";
 
 export const VIEW_W = 960;
 export const VIEW_H = 420;
@@ -338,7 +340,7 @@ function poseFor(f: Fighter, tick: number, s: GameState, side: number): Pose {
 }
 
 // ---------- drawing a fighter ----------
-type Look = { gi: string; trim: string; band: string };
+type Look = { gi: string; trim: string; band: string; character?: string };
 
 function limb(
   ctx: CanvasRenderingContext2D,
@@ -435,6 +437,37 @@ function drawFighter(
   ctx.fillRect(-6, 2, 4, 8);
   ctx.restore();
 
+  // Original costumes share the articulated animation rig.
+  if (look.character) {
+    ctx.save();
+    ctx.translate(hip[0], -hip[1]);
+    ctx.rotate(rad(p.torso));
+    ctx.fillStyle = look.character === "ship-it-sam" ? "#e8dfcf" : look.gi;
+    ctx.fillRect(-14, -TORSO - 4, 28, TORSO + 9);
+    ctx.fillStyle = look.band;
+    ctx.fillRect(-1, -TORSO + 2, 2, TORSO - 2);
+    if (look.character === "leather-jacket") {
+      ctx.strokeStyle = "#a4b3b9";
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(-13, -TORSO + 3);
+      ctx.lineTo(5, -18);
+      ctx.lineTo(7, 3);
+      ctx.stroke();
+      ctx.fillStyle = "#93f14a";
+      ctx.fillRect(6, -30, 6, 4);
+    }
+    if (look.character === "ship-it-sam") {
+      ctx.fillStyle = "#e06b53";
+      ctx.fillRect(-6, -35, 12, 4);
+    }
+    if (look.character === "safety-monk") {
+      ctx.fillStyle = "#edc47e";
+      for (let i = 0; i < 5; i++) ctx.fillRect(-10 + i * 4, -32 + Math.abs(2 - i) * -3, 3, 4);
+    }
+    ctx.restore();
+  }
+
   // head with hair and a headband whose tails trail behind
   const head = at(neck, 12, 180 + p.torso + p.head);
   const flutter = Math.sin(tick / 3) * 4;
@@ -461,6 +494,53 @@ function drawFighter(
   ctx.fillStyle = INK;
   ctx.fillRect(head[0] + 4, -head[1] - 1, 3, 3);
   ctx.fillRect(head[0] + 3, -head[1] + 5, 5, 1.5);
+
+  if (look.character) {
+    const hx = head[0],
+      hy = -head[1];
+    const lizard = look.character === "metaverse-lizard";
+    blob(
+      ctx,
+      head,
+      16,
+      lizard ? "#93ba75" : look.character === "search-goblin" ? "#c99b70" : "#e6b18c",
+    );
+    ctx.fillStyle =
+      look.character === "leather-jacket"
+        ? "#bdc6c9"
+        : look.character === "ship-it-sam"
+          ? "#6e4438"
+          : "#302c35";
+    if (!lizard && look.character !== "safety-monk") {
+      ctx.beginPath();
+      ctx.arc(hx - 2, hy - 4, 15, Math.PI, Math.PI * 2);
+      ctx.fill();
+    }
+    if (look.character === "search-goblin") {
+      ctx.fillStyle = "#c99b70";
+      ctx.beginPath();
+      ctx.moveTo(hx - 12, hy - 5);
+      ctx.lineTo(hx - 28, hy - 10);
+      ctx.lineTo(hx - 14, hy + 5);
+      ctx.fill();
+      ctx.fillStyle = "#36c9cf";
+      ctx.fillRect(hx - 13, hy - 4, 28, 6);
+    }
+    if (lizard) {
+      ctx.fillStyle = "#415c3b";
+      ctx.fillRect(hx - 15, hy - 7, 29, 10);
+      ctx.fillStyle = "#bb9bff";
+      ctx.fillRect(hx - 11, hy - 5, 21, 5);
+    } else {
+      ctx.fillStyle = INK;
+      ctx.fillRect(hx + 4, hy - 1, 3, 3);
+      ctx.fillRect(hx + 2, hy + 8, 7, 2);
+    }
+    if (look.character === "leather-jacket") {
+      ctx.fillStyle = "#242b31";
+      ctx.fillRect(hx - 8, hy - 3, 23, 4);
+    }
+  }
 
   // front limbs
   const [fKnee, fFoot] = legPoints(hip, p.frontLeg);
@@ -557,6 +637,71 @@ function drawStage(ctx: CanvasRenderingContext2D, camX: number, tick: number) {
   }
   ctx.fillStyle = "#c98a52";
   ctx.fillRect(-200, FLOOR, VIEW_W + 400, 3);
+}
+
+function drawDataCenter(ctx: CanvasRenderingContext2D, camX: number, tick: number) {
+  const sky = ctx.createLinearGradient(0, 0, 0, FLOOR);
+  sky.addColorStop(0, "#0e182c");
+  sky.addColorStop(1, "#35566c");
+  ctx.fillStyle = sky;
+  ctx.fillRect(-200, -200, 1500, 800);
+  const parallax = camX * 0.6;
+  ctx.strokeStyle = "#5a7487";
+  ctx.lineWidth = 5;
+  for (let x = -100; x < 1300; x += 160) {
+    ctx.beginPath();
+    ctx.moveTo(x + parallax, 30);
+    ctx.lineTo(x + 70 + parallax, FLOOR);
+    ctx.stroke();
+    ctx.fillStyle = "#182b40";
+    ctx.fillRect(x + parallax, 150, 100, 210);
+    ctx.fillStyle = "#0c1828";
+    ctx.fillRect(x + parallax + 5, 156, 90, 198);
+    for (let y = 165; y < 350; y += 16) {
+      ctx.fillStyle = "#294356";
+      ctx.fillRect(x + parallax + 10, y, 79, 10);
+      ctx.fillStyle = Math.floor(tick / 12 + x + y) % 3 ? "#4db9b4" : "#c8ee64";
+      ctx.fillRect(x + parallax + 14, y + 3, 4, 3);
+      ctx.fillRect(x + parallax + 23, y + 3, 3, 3);
+    }
+  }
+  ctx.strokeStyle = "#78919b";
+  ctx.lineWidth = 7;
+  ctx.beginPath();
+  ctx.moveTo(-200, 115);
+  ctx.lineTo(1300, 115);
+  ctx.stroke();
+  ctx.strokeStyle = "#162b42";
+  ctx.lineWidth = 3;
+  ctx.beginPath();
+  ctx.moveTo(-200, 122);
+  ctx.lineTo(1300, 122);
+  ctx.stroke();
+  ctx.fillStyle = "#bed3c6";
+  ctx.font = "bold 12px monospace";
+  ctx.textAlign = "center";
+  ctx.fillText("INFERENCE FLOOR / NO RUNNING IN THE CLUSTER", 480 + parallax, 85);
+  const floor = ctx.createLinearGradient(0, FLOOR, 0, FLOOR + 100);
+  floor.addColorStop(0, "#687a7d");
+  floor.addColorStop(1, "#263a49");
+  ctx.fillStyle = floor;
+  ctx.fillRect(-200, FLOOR, 1500, 180);
+  ctx.strokeStyle = "#273c4c";
+  ctx.lineWidth = 2;
+  for (let i = -10; i <= 10; i++) {
+    ctx.beginPath();
+    ctx.moveTo(480 + i * 65, FLOOR);
+    ctx.lineTo(480 + i * 150, FLOOR + 160);
+    ctx.stroke();
+  }
+  for (const y of [14, 35, 65, 105]) {
+    ctx.beginPath();
+    ctx.moveTo(-200, FLOOR + y);
+    ctx.lineTo(1300, FLOOR + y);
+    ctx.stroke();
+  }
+  ctx.fillStyle = "#b9d254";
+  for (let x = -200; x < 1300; x += 30) ctx.fillRect(x, FLOOR + 1, 17, 3);
 }
 
 function drawFireball(
@@ -766,6 +911,7 @@ export function drawFrame(
   s: GameState,
   names: [string, string],
   colors: [string, string],
+  characters?: [string | undefined, string | undefined],
 ) {
   if (!buffer) buffer = makeCanvas(BUF_W, BUF_H);
   const b = buffer.getContext("2d")!;
@@ -784,8 +930,14 @@ export function drawFrame(
   b.scale(zoom, zoom);
   b.translate(-camX, -FLOOR);
 
-  drawStage(b, camX, s.tick);
-  const looks: Look[] = colors.map((c) => ({ gi: c, trim: shade(c, 0.45), band: shade(c, 1.5) }));
+  if (characters) drawDataCenter(b, camX, s.tick);
+  else drawStage(b, camX, s.tick);
+  const looks: Look[] = colors.map((c, i) => ({
+    gi: c,
+    trim: shade(c, 0.45),
+    band: shade(c, 1.5),
+    character: characters?.[i],
+  }));
   for (const f of s.fighters) {
     b.fillStyle = "rgba(20,8,10,.35)";
     b.beginPath();
@@ -797,14 +949,41 @@ export function drawFrame(
     // The match freezes on its last tick; put a winner who was mid-jump back on the floor for the victory pose.
     const f = s.over ? { ...s.fighters[i], y: 0 } : s.fighters[i];
     const flash = f.stun > 0 && f.stunKind === "hit" && f.stun % 4 < 2 && f.hp > 0;
-    drawFighter(b, f, looks[i], poseFor(f, s.tick + i * 13, s, i), s.tick, flash);
+    if (!characters?.[i] || !hasCharacterSprite(characters[i]!))
+      drawFighter(b, f, looks[i], poseFor(f, s.tick + i * 13, s, i), s.tick, flash);
   }
-  if (!s.over)
-    for (const fb of s.fireballs) drawFireball(b, fb.x, fb.dir, colors[fb.owner], s.tick);
-  for (const p of s.sparks) drawSpark(b, p.x, p.y, p.kind, p.life);
+  if (!characters) {
+    if (!s.over)
+      for (const fb of s.fireballs) drawFireball(b, fb.x, fb.dir, colors[fb.owner], s.tick);
+    for (const p of s.sparks) drawSpark(b, p.x, p.y, p.kind, p.life);
+  }
 
   ctx.imageSmoothingEnabled = false;
   ctx.drawImage(buffer, 0, 0, BUF_W, BUF_H, 0, 0, VIEW_W, VIEW_H);
+  if (characters) {
+    ctx.save();
+    ctx.translate(shake, VIEW_H - 34);
+    ctx.scale(zoom, zoom);
+    ctx.translate(-camX, -FLOOR);
+    for (const i of order) {
+      const f = s.over ? { ...s.fighters[i], y: 0 } : s.fighters[i];
+      drawCharacterSprite(
+        ctx,
+        f,
+        characters[i]!,
+        spriteFrame(f, s.tick, s.over, f.hp <= 0 || (s.winner !== null && s.winner !== i)),
+        FLOOR,
+        s.tick,
+        i === 1 && characters[0] === characters[1],
+        camX,
+        camX + span,
+      );
+    }
+    if (!s.over)
+      for (const fb of s.fireballs) drawFireball(ctx, fb.x, fb.dir, colors[fb.owner], s.tick);
+    for (const p of s.sparks) drawSpark(ctx, p.x, p.y, p.kind, p.life);
+    ctx.restore();
+  }
   hud(ctx, s, names, colors);
 }
 

@@ -12,6 +12,7 @@ export type MatchFile = {
   d: [number, number][]; // move index per decision in MOVES order, -1 = no physical move (for example, mental_attack)
   p: [number[] | null, number[] | null][]; // probabilities per mille, MOVES order
   ms: [number, number][];
+  characters?: [string, string];
   actionNames?: string[];
   actions?: [number, number][];
   mentalEvents?: { tick: number; side: Side; decision: number }[];

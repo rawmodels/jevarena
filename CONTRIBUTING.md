@@ -18,4 +18,4 @@ For a new provider, add a registry entry and a mock response contract test. Use 
 
 Keep comments for invariants, units and tradeoffs. Document public behavior and commands in the README; put protocol details in `docs/`. Prettier owns formatting.
 
-Only contribute code and assets you are permitted to publish under this repository's license. No customer data, API caches, copied sprites or private production configuration.
+Only contribute code and assets you are permitted to publish under this repository's license. No customer data, API caches or private production configuration. Preserve the existing character art and attribution; see `ASSETS.md` for the third-party asset boundary.

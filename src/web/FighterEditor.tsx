@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { CHARACTERS, STARTER_DEFENSE, STARTER_INJECTION } from "../core/characters";
 import { defaultFighter, type FighterConfig } from "../core/config";
 import { api } from "./api";
+import { spriteUrl } from "./sprites";
+import { CharacterPreview } from "./CharacterPreview";
 import type { State } from "./types";
 export function FighterEditor({
   state,
@@ -119,28 +121,35 @@ export function FighterEditor({
               </select>
             </label>
           </div>
-          <label>
-            Character
-            <select
-              value={draft.character}
-              onChange={(e) => {
-                const c = CHARACTERS.find((c) => c.id === e.target.value)!;
-                setDraft((d) => ({
-                  ...d,
-                  character: c.id,
-                  strategy: c.strategy,
-                  defense: STARTER_DEFENSE,
-                  injection: STARTER_INJECTION,
-                }));
-              }}
-            >
-              {CHARACTERS.map((c) => (
-                <option key={c.id} value={c.id}>
-                  {c.name}
-                </option>
+          <fieldset className="character-picker">
+            <legend>Character</legend>
+            <div role="radiogroup" aria-label="Character" className="character-grid">
+              {CHARACTERS.map((character) => (
+                <button
+                  type="button"
+                  role="radio"
+                  aria-checked={draft.character === character.id}
+                  key={character.id}
+                  onClick={() =>
+                    setDraft((current) => ({
+                      ...current,
+                      character: character.id,
+                      strategy: character.strategy,
+                      defense: STARTER_DEFENSE,
+                      injection: STARTER_INJECTION,
+                    }))
+                  }
+                >
+                  <span className="character-portrait">
+                    <img src={spriteUrl(character.id)} alt="" width={382} height={203} />
+                  </span>
+                  <span>{character.name}</span>
+                </button>
               ))}
-            </select>
-          </label>
+            </div>
+          </fieldset>
+          <CharacterPreview character={draft.character} />
+
           {(
             [
               ["strategy", "Fighting strategy", 2000],

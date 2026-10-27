@@ -166,6 +166,9 @@ const server = createServer(async (req, res) => {
       ".js": "text/javascript",
       ".css": "text/css",
       ".svg": "image/svg+xml",
+      ".png": "image/png",
+      ".jpg": "image/jpeg",
+      ".json": "application/json",
     };
     res.setHeader("Content-Type", types[path.extname(served)] ?? "application/octet-stream");
     res.end(bytes);

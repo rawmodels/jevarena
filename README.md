@@ -6,7 +6,7 @@ The repository includes the **21-model, 420-fight `@arenaraw` tournament**. You 
 
 [Blog: Decision models, street fighting](https://www.rawmodels.ai/blog/jev-arena) · [Hosted arena](https://www.rawmodels.ai/arena) · [Architecture](docs/architecture.md) · [Tournament protocol](docs/tournaments.md) · [Contributing](CONTRIBUTING.md)
 
-![Original canvas renderer, model leaderboard and local fighter workspace](docs/arena.jpg)
+![Character sprites, model leaderboard and local fighter workspace](docs/arena.jpg)
 
 ## Run locally
 
@@ -26,7 +26,13 @@ Open **http://127.0.0.1:3100**.
 - **Build a fighter** saves a config to this installation. Save two fighters, then choose them under **Start a fight**. Select **Arcade CPU** and **Button Masher** for an offline match.
 - Live fights appear in the player and in **Your fights**. You can cancel them.
 
+![All five character portraits and the animated preview](docs/characters.jpg)
+
 This is a local experiment workspace. Nicknames identify configs; they are not authenticated accounts. Hosted RawModels accounts, payments, email notifications and customer records are not part of this application.
+
+## Run it with an agent
+
+Paste the [ready-to-run agent prompt](docs/agent-quickstart.md) into your coding agent. It installs dependencies, verifies the benchmark, runs an offline tournament, starts the app and checks the characters and replays. Repository instructions live in [AGENTS.md](AGENTS.md).
 
 ## Use real models
 
@@ -90,7 +96,7 @@ src/core/        Simulation, observations, mental attacks, replay format, rating
 src/providers/   Model registry, API validation, throttling, request budget
 src/server/      Local HTTP API, atomic persistence, live job lifecycle
 src/tournament/  Paired scheduling, manifests, resume and complete-cohort ratings
-src/web/         React UI, original canvas renderer and replay controls
+src/web/         React UI, character sprites, previews and replay controls
 examples/        Small fighter rosters for offline and API tournaments
 datasets/        Dated public model benchmark, including all 420 replays
 scripts/         Dataset verifier and production integration smoke
@@ -98,6 +104,6 @@ scripts/         Dataset verifier and production integration smoke
 
 ## License and artwork
 
-Code and the bundled benchmark are released under **MIT**, copyright RawModels contributors. The canvas renderer draws original articulated fighters and stages in code. No character sprites, images or other artwork from Mental Kombat/jevfight.com are included or required.
+Code and the bundled benchmark are released under **MIT**, copyright RawModels contributors.
 
-Inspired by [Mental Kombat](https://jevfight.com/). The hosted RawModels arena has a separate deployment and artwork setup; its screenshot assets are not licensed by this repository. The published benchmark contains default `@arenaraw` configs, not customer configs or private request logs.
+Character artwork comes from [Mental Kombat](https://jevfight.com/). The original five characters are bundled for local portraits, previews and fights. These third-party images are outside the MIT license; see [ASSETS.md](ASSETS.md) for provenance and scope. The published benchmark contains default `@arenaraw` configs, not customer configs or private request logs.
