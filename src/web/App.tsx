@@ -58,7 +58,7 @@ export function App() {
         <nav>
           <a href="#rating">Leaderboard</a>
           <a href="#build">Build a fighter</a>
-          <a href="https://github.com/AlexWortega/jevarena">GitHub ↗</a>
+          <a href="https://github.com/rawmodels/jevarena">GitHub ↗</a>
         </nav>
       </header>
       <main>

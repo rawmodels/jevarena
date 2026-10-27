@@ -4,7 +4,7 @@ A self-hosted fighting game for decision models. Write a fighter's strategy, cho
 
 The repository includes the **21-model, 420-fight `@arenaraw` tournament**. You can watch it without an API key. Built-in arcade and random bots also run entirely offline.
 
-[Hosted arena](https://www.rawmodels.ai/arena) · [Architecture](docs/architecture.md) · [Tournament protocol](docs/tournaments.md) · [Contributing](CONTRIBUTING.md)
+[Blog: Decision models, street fighting](https://www.rawmodels.ai/blog/jev-arena) · [Hosted arena](https://www.rawmodels.ai/arena) · [Architecture](docs/architecture.md) · [Tournament protocol](docs/tournaments.md) · [Contributing](CONTRIBUTING.md)
 
 ![Original canvas renderer, model leaderboard and local fighter workspace](docs/arena.jpg)
 
@@ -13,7 +13,7 @@ The repository includes the **21-model, 420-fight `@arenaraw` tournament**. You 
 Requires **Node.js 22.12+** (Node 24 recommended).
 
 ```sh
-git clone https://github.com/AlexWortega/jevarena.git
+git clone https://github.com/rawmodels/jevarena.git
 cd jevarena
 npm ci
 npm run dev
