@@ -34,6 +34,7 @@ Check whether a server already owns the requested port. Reuse it if it is this a
 - `src/core`: physics, observations, mental attacks, replay contract and rating math. No HTTP, filesystem, credentials or React.
 - `src/providers`: registry, response validation, pacing, retries and request budgets.
 - `src/server`: local HTTP API, atomic storage and live jobs. It is a single-operator application, not an authenticated public service.
+- `src/cli`: validated config files and headless import, fight, tournament and server workflows. All fighter fields are configurable; no UI submission is required.
 - `src/tournament`: paired schedules, frozen manifests, writer lock, resume and complete-cohort ratings.
 - `src/web`: UI, character previews, sprite loading and rendering. Static sprites are under `src/web/public/arena/sprites`.
 
@@ -51,6 +52,6 @@ For engine or protocol changes, define compatibility and versioning before editi
 
 ## Assets and publication
 
-The MIT license covers code and benchmark data. Third-party character art has separate provenance in `ASSETS.md`; do not claim it is original artwork or grant a new MIT license for it. Preserve attribution and asset metadata when changing presentation.
+The MIT license covers code, character artwork and benchmark data. The character artwork is maintained by RawModels; preserve character IDs and asset metadata. See `ASSETS.md` for the rendering boundary.
 
 Never commit `.env`, runtime `data/`, API caches, credentials or customer content. Before publishing, inspect the diff and verify the intended GitHub account and remote. Do not deploy the hosted RawModels application as part of a standalone-repo change unless the user asks for that deployment.

@@ -1,14 +1,13 @@
-import { readFile } from "node:fs/promises";
 import { parseArgs } from "node:util";
 import { runTournament } from "./runner";
-import { fighterSchema } from "../core/config";
+import { loadArenaConfig } from "../cli/config";
 const { values } = parseArgs({
   options: {
     config: { type: "string", default: "examples/bots.json" },
-    out: { type: "string", default: "data/tournament" },
-    games: { type: "string", default: "2" },
-    parallel: { type: "string", default: "2" },
-    "max-requests": { type: "string", default: "20000" },
+    out: { type: "string" },
+    games: { type: "string" },
+    parallel: { type: "string" },
+    "max-requests": { type: "string" },
     help: { type: "boolean" },
   },
 });
@@ -20,13 +19,15 @@ if (values.help) {
   const abort = new AbortController();
   process.once("SIGINT", () => abort.abort(new Error("Interrupted")));
   try {
-    const input = JSON.parse(await readFile(values.config!, "utf8")) as unknown[];
+    const config = await loadArenaConfig(values.config!);
     const board = await runTournament({
-      fighters: input.map((f) => fighterSchema.parse(f)),
-      out: values.out!,
-      games: Number(values.games),
-      parallel: Number(values.parallel),
-      maxRequests: Number(values["max-requests"]),
+      fighters: config.fighters,
+      out: values.out ?? config.tournament.out,
+      games: values.games ? Number(values.games) : config.tournament.gamesPerPair,
+      parallel: values.parallel ? Number(values.parallel) : config.tournament.parallel,
+      maxRequests: values["max-requests"]
+        ? Number(values["max-requests"])
+        : config.tournament.maxRequests,
       signal: abort.signal,
     });
     console.table(

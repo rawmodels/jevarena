@@ -1,4 +1,5 @@
-import { mkdir, readFile, readdir, rename, writeFile } from "node:fs/promises";
+import { setTimeout as delay } from "node:timers/promises";
+import { mkdir, readFile, readdir, rename, writeFile, open, unlink } from "node:fs/promises";
 import { createHash, randomUUID } from "node:crypto";
 import path from "node:path";
 import { gunzipSync } from "node:zlib";
@@ -30,19 +31,47 @@ export class Storage {
     }
   }
   saveFighter(fighter: FighterConfig): Promise<void> {
-    const operation = this.pendingSave.then(() => this.writeFighter(fighter));
+    return this.saveFighters([fighter]);
+  }
+  saveFighters(values: FighterConfig[]): Promise<void> {
+    const fighters = values.map((value) => fighterSchema.parse(value));
+    if (new Set(fighters.map((f) => f.id)).size !== fighters.length)
+      return Promise.reject(new Error("Duplicate fighter IDs"));
+    const operation = this.pendingSave.then(() => this.writeFighters(fighters));
     this.pendingSave = operation.catch(() => {});
     return operation;
   }
-  private async writeFighter(fighter: FighterConfig) {
-    const fighters = await this.fighters();
-    const existing = fighters.find((f) => f.id === fighter.id);
-    if (existing && existing.author !== fighter.author)
-      throw new Error("The fighter's author is permanent");
-    await atomicJson(path.join(this.root, "fighters.json"), [
-      ...fighters.filter((f) => f.id !== fighter.id),
-      fighter,
-    ]);
+  private async writeFighters(incoming: FighterConfig[]) {
+    await mkdir(this.root, { recursive: true });
+    const file = path.join(this.root, ".fighters.lock");
+    let lock;
+    for (let attempt = 0; attempt < 200; attempt++) {
+      try {
+        lock = await open(file, "wx", 0o600);
+        break;
+      } catch (error) {
+        if ((error as NodeJS.ErrnoException).code !== "EEXIST") throw error;
+        await delay(25);
+      }
+    }
+    if (!lock) throw new Error("Fighter storage is locked; inspect .fighters.lock before retrying");
+    try {
+      await lock.writeFile(
+        JSON.stringify({ pid: process.pid, createdAt: new Date().toISOString() }),
+      );
+      const current = await this.fighters();
+      const merged = new Map(current.map((f) => [f.id, f]));
+      for (const fighter of incoming) {
+        const existing = merged.get(fighter.id);
+        if (existing && existing.author !== fighter.author)
+          throw new Error("The fighter's author is permanent");
+        merged.set(fighter.id, fighter);
+      }
+      await atomicJson(path.join(this.root, "fighters.json"), [...merged.values()]);
+    } finally {
+      await lock.close();
+      await unlink(file);
+    }
   }
   async saveReplay(replay: Replay) {
     await atomicJson(path.join(this.root, "matches", `${replay.id}.json`), replay);

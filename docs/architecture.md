@@ -48,6 +48,8 @@ New local replays also contain immutable fighter configs and the **full observat
 ## Boundaries
 
 - Provider code owns credentials, response validation, timeouts, per-model pacing and retries.
+- The config CLI can import fighters, run fights and tournaments, then start the server without browser submissions. JSON controls all fighter fields, request budgets, seed, paths and server settings.
+- Fighter writes use a shared filesystem lock across the web server and CLI. Completed CLI replays are visible on the server’s next refresh.
 - The local server owns fighter files and at most two live jobs. Editor jobs are not resumed after a process restart; completed replays persist.
 - Tournament runs are separate from editor jobs and from the bundled benchmark. The CLI does not overwrite the model leaderboard.
 - Local rating identities include the entire fighter config. Editing a config cannot inherit the old config's victories. Historical opponent versions remain distinct nodes in the local rating calculation.

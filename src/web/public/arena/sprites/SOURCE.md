@@ -1,8 +1,4 @@
-Character artwork: Mental Kombat, https://jevfight.com/
+Character artwork: RawModels. Included under the repository's MIT license.
 
-Source assets: public /static/sprites/ files, downloaded on 2026-10-23.
-PNG frames are unchanged. Arena IDs map to char5, char3, char6, char4 and char2.
-Geometry metadata: source manifest version 549690eb2227.
-
-The repository's MIT license does not cover these third-party images.
-See ASSETS.md at the repository root for provenance and license scope.
+The five character IDs and their PNG animation frames match the hosted arena.
+Geometry metadata is recorded in manifest.json, version 549690eb2227.

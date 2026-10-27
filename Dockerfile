@@ -12,6 +12,8 @@ COPY package.json package-lock.json ./
 RUN npm ci --omit=dev && mkdir data && chown node:node data
 COPY --from=build /app/dist ./dist
 COPY datasets ./datasets
+COPY src ./src
+COPY examples ./examples
 USER node
 EXPOSE 3100
 CMD ["node", "dist/server.js"]

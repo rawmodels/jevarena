@@ -10,14 +10,15 @@
   },
   "scripts": {
     "dev": "tsx --env-file-if-exists=.env src/server/main.ts --dev",
-    "build": "vite build && esbuild src/server/main.ts --bundle --platform=node --format=esm --packages=external --outfile=dist/server.js",
+    "build": "vite build && esbuild src/server/main.ts --bundle --platform=node --format=esm --packages=external --outfile=dist/server.js && esbuild src/cli/main.ts --bundle --platform=node --format=esm --packages=external --outfile=dist/arena.js",
     "start": "node --env-file-if-exists=.env dist/server.js",
     "tournament": "tsx --env-file-if-exists=.env src/tournament/cli.ts",
     "dataset:verify": "tsx scripts/verify-dataset.ts",
     "check": "tsc --noEmit && prettier --check . && vitest run",
     "test": "vitest run",
     "format": "prettier --write .",
-    "smoke": "tsx scripts/smoke.ts"
+    "smoke": "tsx scripts/smoke.ts && tsx scripts/smoke-config.ts",
+    "arena": "tsx --env-file-if-exists=.env src/cli/main.ts"
   },
   "dependencies": {
     "react": "19.3.1",

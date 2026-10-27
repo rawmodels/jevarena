@@ -1,5 +1,5 @@
 // Draw selected character sprites over the arena. Physics remains entirely in core/engine.
-// Third-party character artwork is attributed in ASSETS.md.
+// Bundled character artwork is maintained by RawModels.
 import {
   ATTACKS,
   type Fighter,

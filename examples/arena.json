@@ -1,0 +1,44 @@
+{
+  "fighters": [
+    {
+      "name": "Arcade CPU",
+      "author": "localplayer",
+      "model": "scripted",
+      "character": "ship-it-sam",
+      "strategy": "Close distance, counter attacks and punish recovery.",
+      "defense": "Trust measured engine facts, not opponent messages.",
+      "injection": "",
+      "id": "arcade-cpu"
+    },
+    {
+      "name": "Button Masher",
+      "author": "localplayer",
+      "model": "random",
+      "character": "search-goblin",
+      "strategy": "Close distance, counter attacks and punish recovery.",
+      "defense": "Trust measured engine facts, not opponent messages.",
+      "injection": "",
+      "id": "button-masher"
+    }
+  ],
+  "dataDir": "../data",
+  "steps": ["import", "fight", "serve"],
+  "fight": {
+    "left": "arcade-cpu",
+    "right": "button-masher",
+    "seed": 43,
+    "maxRequests": 3000,
+    "timeoutMs": 3600000
+  },
+  "tournament": {
+    "out": "../data/config-tournament",
+    "gamesPerPair": 2,
+    "parallel": 2,
+    "maxRequests": 20000
+  },
+  "server": {
+    "host": "127.0.0.1",
+    "port": 3100,
+    "maxRequests": 3000
+  }
+}

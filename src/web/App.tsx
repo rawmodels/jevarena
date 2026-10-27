@@ -223,8 +223,7 @@ export function App() {
         )}
       </main>
       <footer>
-        JEV Arena · MIT code · Character artwork: <a href="https://jevfight.com/">Mental Kombat</a>{" "}
-        · <a href="https://www.rawmodels.ai/arena">Hosted arena ↗</a>
+        JEV Arena · MIT · RawModels · <a href="https://www.rawmodels.ai/arena">Hosted arena ↗</a>
       </footer>
     </>
   );

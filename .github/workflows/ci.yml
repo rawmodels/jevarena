@@ -17,3 +17,5 @@ jobs:
       - run: npm run build
       - run: npm run smoke
       - run: docker build -t jevarena .
+      - run: docker run --rm jevarena node dist/arena.js fight --config examples/arena.json
+      - run: docker run --rm jevarena node dist/arena.js tournament --config examples/arena.json
